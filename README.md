@@ -1,2 +1,2 @@
 # mandelgo
-A Mandelbrot Set viewer in Golang
+A Mandelbrot Set viewer in Golang.
