@@ -1,2 +1,3 @@
 # mandelgo
-A Mandelbrot Set viewer in Golang.
+An image generator for the Mandelbrot Set in Golang. 
+
