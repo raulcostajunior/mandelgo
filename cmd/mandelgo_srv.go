@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"image/png"
+	"log"
 	"os"
 	"strconv"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/raulcostajunior/mandelgo"
 )
 
@@ -26,7 +30,7 @@ func main() {
 		}
 	}
 	fmt.Println()
-	fmt.Printf("mandelgo_srv - running web server on port %d...\n", portNum)
+	fmt.Printf("mandelgo_srv - Mandelbrot Set Image Viewer on port %d...\n", portNum)
 	fmt.Println()
 	fmt.Println("Press <Ctrl> + <C> to stop the mandelgo server.")
 	runServer(portNum)
@@ -49,5 +53,44 @@ func printUsage() {
 }
 
 func runServer(port int) {
-	mandelgo.GenerateImage(1024, 1024, -2, -2, 2, 2)
+	app := fiber.New()
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		// Retrieves any of the supported path parameters.
+		width := 1024
+		height := 1024
+		xmin := -2
+		ymin := -2
+		xmax := 2
+		ymax := 2
+		var err error
+		if width, err = strconv.Atoi(c.Query("width", "1024")); err != nil {
+			log.Printf("Invalid width given: %s\n", c.Query("width"))
+		}
+		if height, err = strconv.Atoi(c.Query("height", "1024")); err != nil {
+			log.Printf("Invalid height given: %s\n", c.Query("height"))
+		}
+		if xmin, err = strconv.Atoi(c.Query("xmin", "-2")); err != nil {
+			log.Printf("Invalid xmin given: %s\n", c.Query("xmin"))
+		}
+		if ymin, err = strconv.Atoi(c.Query("ymin", "-2")); err != nil {
+			log.Printf("Invalid ymin given: %s\n", c.Query("ymin"))
+		}
+		if xmax, err = strconv.Atoi(c.Query("xmax", "2")); err != nil {
+			log.Printf("Invalid xmax given: %s\n", c.Query("xmax"))
+		}
+		if ymax, err = strconv.Atoi(c.Query("ymax", "2")); err != nil {
+			log.Printf("Invalid xmax given: %s\n", c.Query("ymax"))
+		}
+
+		img := mandelgo.GenerateImage(width, height, xmin, ymin, xmax, ymax)
+		var pngimg bytes.Buffer
+		png.Encode(&pngimg, img)
+
+		c.Set("Content-Type", "image/png")
+		return c.Send(pngimg.Bytes())
+	})
+
+	log.Fatal(app.Listen(fmt.Sprintf(":%d", port)))
+
 }
