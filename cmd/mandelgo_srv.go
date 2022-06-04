@@ -57,29 +57,29 @@ func runServer(port int) {
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		// Retrieves any of the supported path parameters.
-		width := 1024
-		height := 1024
+		width := 1200
+		height := 800
 		xmin := -2
-		ymin := -2
-		xmax := 2
-		ymax := 2
+		ymin := -1
+		xmax := 1
+		ymax := 1
 		var err error
-		if width, err = strconv.Atoi(c.Query("width", "1024")); err != nil {
+		if width, err = strconv.Atoi(c.Query("width", "1200")); err != nil {
 			log.Printf("Invalid width given: %s\n", c.Query("width"))
 		}
-		if height, err = strconv.Atoi(c.Query("height", "1024")); err != nil {
+		if height, err = strconv.Atoi(c.Query("height", "800")); err != nil {
 			log.Printf("Invalid height given: %s\n", c.Query("height"))
 		}
 		if xmin, err = strconv.Atoi(c.Query("xmin", "-2")); err != nil {
 			log.Printf("Invalid xmin given: %s\n", c.Query("xmin"))
 		}
-		if ymin, err = strconv.Atoi(c.Query("ymin", "-2")); err != nil {
+		if ymin, err = strconv.Atoi(c.Query("ymin", "-1")); err != nil {
 			log.Printf("Invalid ymin given: %s\n", c.Query("ymin"))
 		}
-		if xmax, err = strconv.Atoi(c.Query("xmax", "2")); err != nil {
+		if xmax, err = strconv.Atoi(c.Query("xmax", "1")); err != nil {
 			log.Printf("Invalid xmax given: %s\n", c.Query("xmax"))
 		}
-		if ymax, err = strconv.Atoi(c.Query("ymax", "2")); err != nil {
+		if ymax, err = strconv.Atoi(c.Query("ymax", "1")); err != nil {
 			log.Printf("Invalid xmax given: %s\n", c.Query("ymax"))
 		}
 
