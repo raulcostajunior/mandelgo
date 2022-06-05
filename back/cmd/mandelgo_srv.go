@@ -59,31 +59,36 @@ func runServer(port int) {
 		// Retrieves any of the supported path parameters.
 		width := 1200
 		height := 800
-		xmin := -2
-		ymin := -1
-		xmax := 1
-		ymax := 1
+		xmin := -2.0
+		ymin := -2.0
+		xmax := 2.0
+		ymax := 2.0
+		var csval int
 		var err error
-		if width, err = strconv.Atoi(c.Query("width", "1200")); err != nil {
+		if width, err = strconv.Atoi(c.Query("width", "1024")); err != nil {
 			log.Printf("Invalid width given: %s\n", c.Query("width"))
 		}
-		if height, err = strconv.Atoi(c.Query("height", "800")); err != nil {
+		if height, err = strconv.Atoi(c.Query("height", "1024")); err != nil {
 			log.Printf("Invalid height given: %s\n", c.Query("height"))
 		}
-		if xmin, err = strconv.Atoi(c.Query("xmin", "-2")); err != nil {
+		if xmin, err = strconv.ParseFloat(c.Query("xmin", "-2"), 64); err != nil {
 			log.Printf("Invalid xmin given: %s\n", c.Query("xmin"))
 		}
-		if ymin, err = strconv.Atoi(c.Query("ymin", "-1")); err != nil {
+		if ymin, err = strconv.ParseFloat(c.Query("ymin", "-2"), 64); err != nil {
 			log.Printf("Invalid ymin given: %s\n", c.Query("ymin"))
 		}
-		if xmax, err = strconv.Atoi(c.Query("xmax", "1")); err != nil {
+		if xmax, err = strconv.ParseFloat(c.Query("xmax", "2"), 64); err != nil {
 			log.Printf("Invalid xmax given: %s\n", c.Query("xmax"))
 		}
-		if ymax, err = strconv.Atoi(c.Query("ymax", "1")); err != nil {
+		if ymax, err = strconv.ParseFloat(c.Query("ymax", "2"), 64); err != nil {
 			log.Printf("Invalid xmax given: %s\n", c.Query("ymax"))
 		}
+		if csval, err = strconv.Atoi(c.Query("colorScheme", "1")); err != nil {
+			log.Printf("Invalid ColorScheme given: %d\n", c.Query("colorScheme"))
+		}
+		cs := mandelgo.ColorSchemeFromValue(csval)
 
-		img := mandelgo.GenerateImage(width, height, xmin, ymin, xmax, ymax)
+		img := mandelgo.GenerateImage(width, height, xmin, ymin, xmax, ymax, cs)
 		var pngimg bytes.Buffer
 		png.Encode(&pngimg, img)
 
