@@ -46,11 +46,11 @@ func mandelbrot(z complex128, cs ColorScheme) color.Color {
 			case GrayScale:
 				return color.Gray{255 - contrast*n}
 			case RedScale:
-				return color.RGBA{255 - contrast*n, 0, 0, 255}
+				return color.RGBA{255 - contrast*n, 20, 20, 255}
 			case GreenScale:
-				return color.RGBA{0, 255 - contrast*n, 0, 255}
+				return color.RGBA{20, 255 - contrast*n, 20, 255}
 			case BlueScale:
-				return color.RGBA{0, 0, 255 - contrast*n, 255}
+				return color.RGBA{20, 20, 255 - contrast*n, 255}
 			}
 		}
 	}
