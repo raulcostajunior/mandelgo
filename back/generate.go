@@ -11,9 +11,7 @@ type ColorScheme int
 const (
 	Mono ColorScheme = iota
 	GrayScale
-	RedScale
-	GreenScale
-	BlueScale
+	MultiHue
 )
 
 func ColorSchemeFromValue(val int) ColorScheme {
@@ -23,16 +21,44 @@ func ColorSchemeFromValue(val int) ColorScheme {
 	case 1:
 		return GrayScale
 	case 2:
-		return RedScale
-	case 3:
-		return GreenScale
-	case 4:
-		return BlueScale
+		return MultiHue
 	}
-	return GrayScale
+	return MultiHue
+}
+
+func HSV_2_RGBA(h uint16, s uint8, v uint8) (r, g, b, a uint32) {
+	// Converts a color given in (H)ue, (S)aturation, (V)alue model into its
+	// equivalent in the RGBA model.
+	// Direct implementation of the graph in this image:
+	// https://en.wikipedia.org/wiki/HSL_and_HSV#/media/File:HSV-RGB-comparison.svg
+	max := uint32(v) * 255
+	min := uint32(v) * uint32(255-s)
+
+	h %= 360
+	segment := h / 60
+	offset := uint32(h % 60)
+	mid := ((max - min) * offset) / 60
+
+	switch segment {
+	case 0:
+		return max, min + mid, min, 0xffff
+	case 1:
+		return max - mid, max, min, 0xffff
+	case 2:
+		return min, max, min + mid, 0xffff
+	case 3:
+		return min, max - mid, max, 0xffff
+	case 4:
+		return min + mid, min, max, 0xffff
+	case 5:
+		return max, min, max - mid, 0xffff
+	}
+	return 0, 0, 0, 0xffff
 }
 
 func mandelbrot(z complex128, cs ColorScheme) color.Color {
+	// TODO add smooth coloring option (avoid banding). Details at:
+	// https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set
 	const iterations = 200
 	const contrast = 15
 
@@ -45,12 +71,9 @@ func mandelbrot(z complex128, cs ColorScheme) color.Color {
 				return color.White
 			case GrayScale:
 				return color.Gray{255 - contrast*n}
-			case RedScale:
-				return color.RGBA{255 - contrast*n, 20, 20, 255}
-			case GreenScale:
-				return color.RGBA{20, 255 - contrast*n, 20, 255}
-			case BlueScale:
-				return color.RGBA{20, 20, 255 - contrast*n, 255}
+			case MultiHue:
+				r, g, b, a := HSV_2_RGBA(uint16(n+15), 180, 160)
+				return color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)}
 			}
 		}
 	}

@@ -83,8 +83,8 @@ func runServer(port int) {
 		if ymax, err = strconv.ParseFloat(c.Query("ymax", "2"), 64); err != nil {
 			log.Printf("Invalid xmax given: %s\n", c.Query("ymax"))
 		}
-		if csval, err = strconv.Atoi(c.Query("colorScheme", "1")); err != nil {
-			log.Printf("Invalid ColorScheme given: %d\n", c.Query("colorScheme"))
+		if csval, err = strconv.Atoi(c.Query("colorScheme", "2")); err != nil {
+			log.Printf("Invalid ColorScheme given: %s\n", c.Query("colorScheme"))
 		}
 		cs := mandelgo.ColorSchemeFromValue(csval)
 
