@@ -57,7 +57,9 @@ func mandelbrot(z complex128, cs ColorScheme) color.Color {
 	return color.Black
 }
 
-func GenerateImage(width int, height int, xmin float64, ymin float64, xmax float64, ymax float64, cs ColorScheme) image.Image {
+func GenerateImage(width int, height int, xmin float64, ymin float64, xmax float64,
+	ymax float64, cs ColorScheme) image.Image {
+
 	img := image.NewNRGBA((image.Rect(0, 0, width, height)))
 	yvar := ymax - ymin
 	xvar := xmax - xmin
